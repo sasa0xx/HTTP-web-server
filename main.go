@@ -20,6 +20,7 @@ func main() {
 	mux.HandleFunc("/", HandleRoot)
 	mux.HandleFunc("POST /users", CreateUser)
 	mux.HandleFunc("GET /users/{id}", GetUser)
+	mux.HandleFunc("DELETE /users/{id}", DeleteUser)
 	http.ListenAndServe(":8080", mux)
 }
 
@@ -57,7 +58,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	cacheMutex.RLock()
 	user, ok := usersCache[id]
 	if !ok {
-		http.Error(w, "User not found.", http.StatusNotFound)
+		http.Error(w, "User not found.", http.StatusBadRequest)
 		return
 	}
 	cacheMutex.RUnlock()
@@ -70,4 +71,23 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(name)
+}
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	cacheMutex.RLock()
+	_, ok := usersCache[id]
+	if !ok {
+		http.Error(w, "User not found.", http.StatusBadRequest)
+		return
+	}
+	cacheMutex.RUnlock()
+
+	w.WriteHeader(http.StatusNoContent)
+	delete(usersCache, id)
 }
