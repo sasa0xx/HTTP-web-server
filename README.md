@@ -37,66 +37,70 @@ To test the project you can use Postman or the simply the curl command, here are
 ```bash
 curl -i http://localhost:8080/
 ```
-Output:
 ```
 200 OK
 Content-Type: text/plain
 Body: Hello, World! :D
 ```
 
+---
+
 ```bash
 curl -i -X POST http://localhost:8080/users \
   -H "Content-Type: application/json" \
   -d '{}'
 ```
-Output:
 ```
 400 Bad Request
 Body: User name is required
 ```
+
+---
 
 ```bash
 curl -i -X POST http://localhost:8080/users \
   -H "Content-Type: application/json" \
   -d '{"name":"Alice"}'
 ```
-Output:
 ```
 204 No content
 ```
 
+---
+
 ```bash
 curl -i http://localhost:8080/users/0
 ```
-Output:
 ```
 200 OK
 Content-Type: application/json
 Body: {"name":"Alice"}
 ```
 
+---
+
 ```bash
 curl -i http://localhost:8080/users/999
 ```
-Output:
 ```
 400 Bad Request
 User not found.
 ```
 
+---
+
 ```bash
 curl -i -X DELETE http://localhost:8080/users/0
 ```
-Output:
 ```
 204 No Content
 ```
 
+---
 
 ```bash
 curl -i http://localhost:8080/users/0
 ```
-Output:
 ```
 400 Bad Request
 User not found.
